@@ -327,6 +327,12 @@ h2 { font-family: var(--display); font-size: clamp(1.6rem, 3.4vw, 2.15rem); font
 .cert-list { display: grid; gap: 0.45rem; }
 .cert-list li { position: relative; padding-left: 1.35rem; color: var(--muted); font-size: 0.9rem; }
 .cert-list li::before { content: "✓"; position: absolute; left: 0; color: var(--accent-3); font-weight: 700; }
+.awards-panel { margin-top: 1.2rem; }
+.award-list { display: grid; gap: 0.7rem; }
+.award-list li { position: relative; padding-left: 1.5rem; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+.award-list li::before { content: "★"; position: absolute; left: 0; top: 0; color: var(--accent); font-size: 0.8rem; }
+.award-list strong { color: var(--text); font-weight: 600; }
+.about-note { font-size: 0.92rem; color: var(--muted); border-left: 2px solid var(--border-strong); padding-left: 1rem; }
 
 /* ---------- contact ---------- */
 .contact-card { display: flex; gap: 1.9rem; padding: 2rem 2.1rem; align-items: center; flex-wrap: wrap; }
