@@ -324,9 +324,6 @@ h2 { font-family: var(--display); font-size: clamp(1.6rem, 3.4vw, 2.15rem); font
 .edu { display: flex; flex-direction: column; gap: 0.2rem; }
 .edu strong { font-family: var(--display); font-size: 1rem; }
 .edu span { color: var(--muted); font-size: 0.88rem; }
-.cert-list { display: grid; gap: 0.45rem; }
-.cert-list li { position: relative; padding-left: 1.35rem; color: var(--muted); font-size: 0.9rem; }
-.cert-list li::before { content: "✓"; position: absolute; left: 0; color: var(--accent-3); font-weight: 700; }
 .awards-panel { margin-top: 1.2rem; }
 .award-list { display: grid; gap: 0.7rem; }
 .award-list li { position: relative; padding-left: 1.5rem; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
