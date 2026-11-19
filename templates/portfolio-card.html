@@ -1,0 +1,34 @@
+<!--
+  Portfolio card snippet
+  ----------------------
+  Paste one block per registry entry into the .pub-grid container in index.html
+  (section id="cases"), after the existing <article> elements.
+
+  Replace:
+    CARD TITLE      → entry.title
+    CARD SUMMARY    → entry.summary
+    CHIP 1/2/3      → entry.chips
+    WRITE-UP URL    → entry.url (relative file in the repo, or absolute URL)
+    REPOSITORY URL  → entry.repo (omit the second button if empty)
+
+  Keep it to two buttons per card. Nothing here needs JavaScript.
+-->
+
+<article class="glass pub-card" data-reveal>
+  <h3>CARD TITLE</h3>
+  <p>CARD SUMMARY</p>
+  <div class="chips"><span>CHIP 1</span><span>CHIP 2</span><span>CHIP 3</span></div>
+  <a class="btn btn-ghost btn-sm" href="WRITE-UP URL" target="_blank" rel="noopener">Read the case study</a>
+</article>
+
+<!--
+  Variant with a repository link as well:
+
+<article class="glass pub-card" data-reveal>
+  <h3>CARD TITLE</h3>
+  <p>CARD SUMMARY</p>
+  <div class="chips"><span>CHIP 1</span><span>CHIP 2</span></div>
+  <a class="btn btn-ghost btn-sm" href="WRITE-UP URL" target="_blank" rel="noopener">Case study</a>
+  <a class="btn btn-ghost btn-sm" href="REPOSITORY URL" target="_blank" rel="noopener">Repository</a>
+</article>
+-->

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment-Direction Deception on a Classifieds Marketplace — Gururaj G J</title>
+<meta name="description" content="A seller was contacted within minutes of listing an item and sent two images implying a payment had arrived. Neither showed a credit. Checking the balance instead of the screenshot is what stopped it.">
+<meta name="author" content="Gururaj G J">
+<meta name="theme-color" content="#05080f">
+<meta property="og:title" content="Payment-Direction Deception on a Classifieds Marketplace">
+<meta property="og:description" content="A seller was contacted within minutes of listing an item and sent two images implying a payment had arrived. Neither showed a credit. Checking the balance instead of the screenshot is what stopped it.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Ctext x='32' y='43' font-family='Arial' font-size='30' font-weight='bold' fill='%2338bdf8' text-anchor='middle'%3EGJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+
+<nav class="nav scrolled">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark">GJ</span>
+      <span class="brand-text">Gururaj <em>G J</em></span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="../index.html#cases">&larr; Case studies &amp; publications</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container article-shell">
+  <article class="article">
+    <div class="article-meta">
+      <span class="article-kind">Case study</span>
+      <span>April 2026</span>
+      <span>4 min read</span>
+    </div>
+<h1>Payment-Direction Deception on a Classifieds Marketplace</h1>
+<h2>1. Summary</h2>
+<p>A seller published a classifieds listing and was contacted by an unknown party within minutes. The contact sent two images — a QR-style graphic labelled as a ₹1.00 credit, and a photograph of a merchant POS terminal — then asked the seller to complete a step to "release" the money. Neither image evidenced an incoming payment. The seller checked the account balance rather than the screenshot, recognised the payment-direction reversal, and declined to act. No funds left the account.</p>
+<p>The pattern matters because it needs no stolen credentials, no malware and no data breach. It needs one misread step: a victim who confuses <em>receiving</em> money with <em>sending</em> money.</p>
+<h2>2. Context</h2>
+<ul>
+<li><strong>Who was exposed:</strong> an individual seller, not a business. The loss, had it succeeded, would have been the item's value plus whatever the "release" step demanded.</li>
+<li><strong>Platform:</strong> a large Indian classifieds marketplace where sellers publish a contact number or accept in-app chat, so the conversation moves off-platform almost immediately.</li>
+<li><strong>Timing:</strong> April 2026. The approach arrived within minutes of publication, consistent with automated monitoring of new listings rather than a human browsing the category.</li>
+<li><strong>Why it matters:</strong> card, UPI and wallet controls do not help here, because the victim authorises the transfer themselves.</li>
+</ul>
+<h2>3. What the parties saw</h2>
+<ol>
+<li>Listing goes live; an unknown number opens contact on a messaging app.</li>
+<li>First image: a QR-style graphic carrying a "Received Money ₹1.00" label.</li>
+<li>Second image: a photograph of a merchant POS terminal showing a payment-processing interface.</li>
+<li>Message: the "buyer" says the payment is on hold and asks the seller to scan a code or open a link to receive it.</li>
+</ol>
+<p>What was visible at the time was a plausible-looking pair of screenshots. What was established later is that neither artefact can evidence a credit: a QR graphic carries no transaction record, and a photograph of a terminal shows a device, not a settlement.</p>
+<h2>4. Method</h2>
+<ol>
+<li><strong>Preserve first.</strong> Capture the conversation with timestamps before replying to anything.</li>
+<li><strong>Reconstruct the timeline.</strong> Log message timestamps at second-level granularity to test whether first contact was human or automated.</li>
+<li><strong>Examine the artefacts.</strong> Image dimensions, compression and layout — whether the graphics match genuine app screenshots or are composites.</li>
+<li><strong>Test the claim against the mechanism.</strong> Ask what record a genuine credit would produce — a bank or UPI reference, an app notification, a balance change — and check whether any of it exists. None did.</li>
+<li><strong>Read the ask.</strong> Every payment-direction deception ends with an action that <em>sends</em> money or grants access. The ask is the tell, and it is the fastest thing to check.</li>
+</ol>
+<h2>5. Evidence</h2>
+<table><thead><tr><th>Artefact</th><th>What it shows</th><th>Integrity</th></tr></thead><tbody>
+<tr><td>Listing page capture</td><td>publication time, item, contact route</td><td>held, hashed</td></tr>
+<tr><td>Chat transcript export</td><td>contact arrived four minutes after publication</td><td>held, hashed</td></tr>
+<tr><td>Image 1 — QR-style "received ₹1.00"</td><td>no transaction reference of any kind</td><td>held, hashed</td></tr>
+<tr><td>Image 2 — POS terminal photograph</td><td>a device screen, not a settlement record</td><td>held, hashed</td></tr>
+<tr><td>Sender number</td><td>off-platform, unverified identity</td><td>reported to platform</td></tr>
+</tbody></table>
+<p>Originals are not published and identifiers are withheld.</p>
+<h2>6. Findings</h2>
+<ul>
+<li><strong>Confirmed</strong> — contact was initiated within minutes of publication, before any negotiation.</li>
+<li><strong>Confirmed</strong> — neither artefact contained a transaction reference, and the account balance did not change.</li>
+<li><strong>Confirmed</strong> — the request that followed was an action that would have moved money outward.</li>
+<li><strong>Probable</strong> — the approach was templated and sent to multiple new listings; the wording and cadence were not tailored to the item.</li>
+<li><strong>Unconfirmed</strong> — who operated the number, and whether the POS photograph was genuine, borrowed or generated. No attribution is made.</li>
+</ul>
+<h2>7. Indicators and red flags</h2>
+<ul>
+<li>Payment "confirmed" by an image, never by a balance, notification or reference number.</li>
+<li>Contact within minutes of publication.</li>
+<li>Any request to scan a code, open a link, or enter a PIN <strong>in order to receive</strong> money.</li>
+<li>A POS terminal or merchant-app screenshot offered as proof of a transfer to a personal account.</li>
+<li>Pressure to act before the item is inspected or collected.</li>
+<li>Move to a messaging app before the first real exchange.</li>
+</ul>
+<h2>8. What stopped it / what would have stopped it</h2>
+<ul>
+<li>The seller checked the balance instead of the screenshot. That single habit defeats the pattern.</li>
+<li>A prompt on new listings — "never scan a code to receive money" — would remove most of the exposure at the point of contact.</li>
+<li>In-app chat with number masking delays the off-platform move.</li>
+</ul>
+<h2>9. Limitations</h2>
+<ul>
+<li>Single case with no loss, so no loss figure is claimed.</li>
+<li>The sender's identity was never established; nothing here should be read as an allegation against any identifiable person.</li>
+<li>The judgement that the artefacts were composites rests on layout and metadata, not on device examination of the sender's phone.</li>
+</ul>
+<h2>10. References</h2>
+<ul>
+<li>Reserve Bank of India, customer-awareness material on UPI "request money" and QR-code frauds (accessed April 2026).</li>
+<li>National Cyber Crime Reporting Portal, guidance on reporting unauthorised transactions (accessed April 2026).</li>
+</ul>
+<hr>
+<p><strong>Disclaimer.</strong> This write-up describes a single documented instance and is published for professional education. All personal and institutional identifiers have been removed or replaced with synthetic values. Findings are limited to the evidence described above; nothing here should be read as an allegation against any named or unnamed party.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">Gururaj <em>G J</em></div>
+    <p class="footer-line">Fraud Investigation &middot; Transaction Laundering &middot; Merchant Risk &middot; AML/CFT &middot; Trust &amp; Safety</p>
+    <div class="footer-links">
+      <a href="https://github.com/Gururaj-GJ-G" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/gururaj-gj-52a062b4" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:gururaj.gj.guru@gmail.com">Email</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Gururaj G J &middot; Bengaluru, India</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Fraud Signal Taxonomy That Survives an Audit — Gururaj G J</title>
+<meta name="description" content="Signals drift into folklore when nobody owns their definitions. Seven categories, a stated reason for every weight, and a version stamp turn a signal list into an auditable asset.">
+<meta name="author" content="Gururaj G J">
+<meta name="theme-color" content="#05080f">
+<meta property="og:title" content="A Fraud Signal Taxonomy That Survives an Audit">
+<meta property="og:description" content="Signals drift into folklore when nobody owns their definitions. Seven categories, a stated reason for every weight, and a version stamp turn a signal list into an auditable asset.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Ctext x='32' y='43' font-family='Arial' font-size='30' font-weight='bold' fill='%2338bdf8' text-anchor='middle'%3EGJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+
+<nav class="nav scrolled">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark">GJ</span>
+      <span class="brand-text">Gururaj <em>G J</em></span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="../index.html#cases">&larr; Case studies &amp; publications</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container article-shell">
+  <article class="article">
+    <div class="article-meta">
+      <span class="article-kind">Publication</span>
+      <span>15 October 2026</span>
+      <span>4 min read</span>
+    </div>
+<h1>A Fraud Signal Taxonomy That Survives an Audit</h1>
+<h2>Abstract</h2>
+<p>Every fraud team accumulates signals. Few can say, on request, what a signal means, why it carries the weight it does, when it changed, or which decisions it has driven. That gap is what an auditor, regulator or challenger model finds first. This note proposes a taxonomy structure — seven categories, per-signal weight rationale, explicit trigger conditions, and a version stamp — that keeps a signal library defensible as it grows.</p>
+<h2>1. The problem</h2>
+<p>A signal that cannot be explained is a signal that cannot be defended. When a customer disputes a block, the question is not "was the model right?" but "what did you observe, and why did that justify the action?" A list of feature names answers neither part.</p>
+<p>Three symptoms show the library has become folklore:</p>
+<ul>
+<li>two teams implement "impossible travel" with different thresholds and both call it the same signal;</li>
+<li>a weight is changed during an incident and nobody records it;</li>
+<li>a signal is retired but still fires inside a legacy rule pack.</li>
+</ul>
+<h2>2. Why current practice falls short</h2>
+<p>Feature stores solve retrieval, not meaning. Model registries version models, not the semantics of the inputs. Neither tells an investigator that a signal means <em>this device changed the SIM in the last twenty-four hours and the account changed its payout destination within the same window</em> — which is the sentence that makes a decision defensible.</p>
+<h2>3. The proposed approach</h2>
+<p><strong>Seven categories.</strong> Device, network, behaviour, authentication, account, linkage, transaction. The split is not academic: each category has a different evidence source, a different retention period and a different failure mode, so grouping by category makes it obvious where a library is thin. Most teams are heavy on transaction and device signals and almost empty on linkage — which is where mule and ring behaviour actually shows.</p>
+<p><strong>A record per signal.</strong> Every signal carries:</p>
+<table><thead><tr><th>Field</th><th>Why it exists</th></tr></thead><tbody>
+<tr><td><code>id</code></td><td>stable key, never reused</td></tr>
+<tr><td><code>name</code></td><td>plain-language meaning, no jargon</td></tr>
+<tr><td><code>category</code></td><td>one of the seven</td></tr>
+<tr><td><code>trigger</code></td><td>the precise condition, in words an investigator can read</td></tr>
+<tr><td><code>evidence</code></td><td>what the investigator is shown when it fires</td></tr>
+<tr><td><code>weight</code></td><td>score impact, plus the reasoning for that value</td></tr>
+<tr><td><code>source</code></td><td>system of record the signal is computed from</td></tr>
+<tr><td><code>version</code></td><td>semantic version of the definition</td></tr>
+<tr><td><code>owner</code></td><td>the team accountable for its accuracy</td></tr>
+</tbody></table>
+<p><strong>Named rule packs.</strong> Signals score; packs decide. A pack is a named combination mapped to a typology — account-takeover reset, impossible travel, emulator plus hooking, device farming, remote-control takeover, payout-abuse chains, mule pass-through. Naming them makes coverage auditable: you can say which typologies you detect and which you do not.</p>
+<p><strong>Deterministic outcomes.</strong> ALLOW, REVIEW or BLOCK, with the triggered signals, their evidence and a narrative. A deterministic engine will not out-perform a good model on raw detection; it will survive a conversation with a regulator, which is the binding constraint in most regulated environments.</p>
+<h2>4. How it works in practice</h2>
+<p>A decision narrative that an auditor can follow:</p>
+<blockquote><strong>REVIEW</strong> — score 62. Triggered: <code>DEV-SIM-CHANGE-01</code> (SIM changed 14 hours before the request; evidence: carrier record), <code>ACC-PAYOUT-CHANGE-02</code> (payout destination added 11 hours before request), <code>NET-ASN-NEW-03</code> (first sighting of this ASN for the account). Rule pack: payout-abuse chain. Not triggered: device compromise signals, so a takeover narrative is not supported — this is a payout-destination change, not a compromised handset.</blockquote>
+<p>Note what that narrative does: it states the decision, the signals, the evidence, and — critically — what was <em>not</em> observed and why that matters. The last part is what most systems omit and what investigators ask for.</p>
+<h2>5. Trade-offs and failure modes</h2>
+<ul>
+<li><strong>Weights are opinions until calibrated.</strong> Write the rationale at the time of writing, not later; "0.35 because it appeared in 62% of confirmed mule cases in Q3" is defensible, "0.35" is not.</li>
+<li><strong>Deterministic engines do not generalise.</strong> They catch what you thought of. Pair them with monitoring for the typologies you have not named yet.</li>
+<li><strong>Taxonomies rot.</strong> Without an owner per signal and a review cadence, the library becomes a museum within a year.</li>
+<li><strong>Explainability has a cost.</strong> Narratives slow decisions slightly and require the evidence to be retrievable at decision time, which means retention policy has to be designed, not assumed.</li>
+</ul>
+<h2>6. What to measure</h2>
+<ul>
+<li><strong>Signal coverage per category</strong> — how many typologies each category can support.</li>
+<li><strong>Firing rate per signal</strong> — a signal that never fires is dead weight; one that always fires is a broken threshold.</li>
+<li><strong>Narrative completeness</strong> — share of decisions where every triggered signal has attached evidence.</li>
+<li><strong>Override rate</strong> — how often investigators disagree with the engine, by pack. This is the best available feedback signal.</li>
+<li><strong>Definition churn</strong> — signals changed per quarter, and whether each change was recorded.</li>
+</ul>
+<h2>7. Conclusion</h2>
+<p>Write the library as if it will be read aloud in a dispute, because one day it will be. Seven categories, a reason for every weight, and a version on every definition cost a week and save the argument.</p>
+<hr>
+<p><strong>Disclaimer.</strong> The views here are the author's own and describe a method, not a client engagement. Any figures or cases are synthetic or drawn from public sources.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">Gururaj <em>G J</em></div>
+    <p class="footer-line">Fraud Investigation &middot; Transaction Laundering &middot; Merchant Risk &middot; AML/CFT &middot; Trust &amp; Safety</p>
+    <div class="footer-links">
+      <a href="https://github.com/Gururaj-GJ-G" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/gururaj-gj-52a062b4" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:gururaj.gj.guru@gmail.com">Email</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Gururaj G J &middot; Bengaluru, India</p>
+  </div>
+</footer>
+
+</body>
+</html>

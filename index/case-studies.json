@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-11-19",
+  "description": "Registry of case studies and publications. The Case Studies & Publications grid on index.html is written from this file; scripts/build_cases.py generates one reader page per entry under cases/.",
+  "fields": {
+    "id": "Must match the filename prefix, e.g. CS-2026-001",
+    "type": "case-study | publication",
+    "title": "Card title, 60 characters or fewer",
+    "date": "ISO date of publication",
+    "category": "marketplace | payments | merchant-risk | aml | ato | forensics | methodology | trust-and-safety | ai-governance | other",
+    "summary": "One or two sentences, 240 characters or fewer",
+    "chips": "Two or three short labels shown on the card",
+    "url": "Markdown source, relative to the repository root",
+    "page": "Generated reader page, written by scripts/build_cases.py",
+    "read_minutes": "Written by scripts/build_cases.py",
+    "status": "published | withdrawn"
+  },
+  "entries": [
+    {
+      "id": "CS-2026-001",
+      "type": "case-study",
+      "title": "Payment-Direction Deception on a Classifieds Marketplace",
+      "date": "2026-04-01",
+      "category": "marketplace",
+      "summary": "A seller was contacted within minutes of listing an item and sent two images implying a payment had arrived. Neither showed a credit. Checking the balance instead of the screenshot is what stopped it.",
+      "chips": [
+        "Marketplace fraud",
+        "Social engineering",
+        "Evidence timeline"
+      ],
+      "url": "case-studies/CS-2026-001-payment-direction-deception.md",
+      "status": "published",
+      "page": "cases/CS-2026-001-payment-direction-deception.html",
+      "read_minutes": 4,
+      "words": 856
+    },
+    {
+      "id": "PUB-2026-001",
+      "type": "publication",
+      "title": "What a Payment-Risk Reviewer Wants From an Onboarding Pack",
+      "date": "2026-11-01",
+      "category": "merchant-risk",
+      "summary": "Most merchant onboarding rejections are evidence problems, not business-model problems. A five-layer assessment and one well-built pack answer the four questions a reviewer actually asks.",
+      "chips": [
+        "Merchant risk",
+        "KYB",
+        "Evidence packaging"
+      ],
+      "url": "publications/PUB-2026-001-payment-risk-onboarding-pack.md",
+      "status": "published",
+      "page": "cases/PUB-2026-001-payment-risk-onboarding-pack.html",
+      "read_minutes": 4,
+      "words": 874
+    },
+    {
+      "id": "PUB-2026-002",
+      "type": "publication",
+      "title": "A Fraud Signal Taxonomy That Survives an Audit",
+      "date": "2026-10-15",
+      "category": "methodology",
+      "summary": "Signals drift into folklore when nobody owns their definitions. Seven categories, a stated reason for every weight, and a version stamp turn a signal list into an auditable asset.",
+      "chips": [
+        "Signals",
+        "Explainability",
+        "Governance"
+      ],
+      "url": "publications/PUB-2026-002-fraud-signal-taxonomy.md",
+      "status": "published",
+      "page": "cases/PUB-2026-002-fraud-signal-taxonomy.html",
+      "read_minutes": 4,
+      "words": 833
+    },
+    {
+      "id": "PUB-2026-003",
+      "type": "publication",
+      "title": "Six Questions a Payment-Fraud Dashboard Should Answer",
+      "date": "2026-09-20",
+      "category": "payments",
+      "summary": "Most fraud dashboards report activity. The useful ones answer six questions — and the last two, what did we miss and what did we get wrong, are the ones that separate a status screen from a control.",
+      "chips": [
+        "Payments",
+        "Metrics",
+        "Operations"
+      ],
+      "url": "publications/PUB-2026-003-payment-fraud-dashboard.md",
+      "status": "published",
+      "page": "cases/PUB-2026-003-payment-fraud-dashboard.html",
+      "read_minutes": 3,
+      "words": 753
+    }
+  ]
+}

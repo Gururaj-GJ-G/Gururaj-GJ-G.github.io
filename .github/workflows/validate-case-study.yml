@@ -1,0 +1,53 @@
+name: validate-case-study
+
+on:
+  pull_request:
+    paths:
+      - "case-studies/**"
+      - "publications/**"
+      - "index/case-studies.json"
+  push:
+    branches: [main]
+    paths:
+      - "case-studies/**"
+      - "publications/**"
+      - "index/case-studies.json"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate every write-up
+        run: python scripts/validate.py --all
+
+      - name: Check the registry
+        run: python scripts/validate.py --registry
+
+      - name: Reader pages are up to date
+        run: |
+          python scripts/build_cases.py
+          if ! git diff --quiet -- cases/ index/; then
+            echo "::error::Generated reader pages are stale. Run 'python scripts/build_cases.py' and commit cases/ and index/case-studies.json."
+            git --no-pager diff --stat -- cases/ index/
+            exit 1
+          fi
+
+      - name: Check for unredacted contact details in changed files
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}" -- 'case-studies/*.md' 'publications/*.md' || true)
+          if [ -n "$changed" ]; then
+            echo "Validating changed files:"
+            echo "$changed"
+            python scripts/validate.py $changed
+          else
+            echo "No write-ups changed."
+          fi

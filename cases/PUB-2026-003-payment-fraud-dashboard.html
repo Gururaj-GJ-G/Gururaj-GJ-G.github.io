@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Six Questions a Payment-Fraud Dashboard Should Answer — Gururaj G J</title>
+<meta name="description" content="Most fraud dashboards report activity. The useful ones answer six questions — and the last two, what did we miss and what did we get wrong, are the ones that separate a status screen from a control.">
+<meta name="author" content="Gururaj G J">
+<meta name="theme-color" content="#05080f">
+<meta property="og:title" content="Six Questions a Payment-Fraud Dashboard Should Answer">
+<meta property="og:description" content="Most fraud dashboards report activity. The useful ones answer six questions — and the last two, what did we miss and what did we get wrong, are the ones that separate a status screen from a control.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Ctext x='32' y='43' font-family='Arial' font-size='30' font-weight='bold' fill='%2338bdf8' text-anchor='middle'%3EGJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="article-page">
+
+<nav class="nav scrolled">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark">GJ</span>
+      <span class="brand-text">Gururaj <em>G J</em></span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="../index.html#cases">&larr; Case studies &amp; publications</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container article-shell">
+  <article class="article">
+    <div class="article-meta">
+      <span class="article-kind">Publication</span>
+      <span>20 September 2026</span>
+      <span>3 min read</span>
+    </div>
+<h1>Six Questions a Payment-Fraud Dashboard Should Answer</h1>
+<h2>Abstract</h2>
+<p>Fraud dashboards usually report activity — alerts raised, cases closed, blocks applied. Activity is easy to count and tells an operator almost nothing about whether losses are being prevented. This note sets out six questions a payment-fraud dashboard should answer, with the metric and the trap for each, and argues that the last two questions are the ones that separate a monitoring screen from a control.</p>
+<h2>1. The problem</h2>
+<p>A dashboard full of activity metrics creates a false sense of control. Alert volume rises, cases close, the screen is green — while the loss rate climbs, because nobody is measuring the loss rate on that screen. The metrics that matter are usually absent because they require joins across systems: the payment record, the dispute record, the case record and the customer record.</p>
+<h2>2. Why current practice falls short</h2>
+<p>Three habits get in the way.</p>
+<p><strong>Counting inputs.</strong> Alerts, blocks and reviews are inputs. They say how busy the team is.</p>
+<p><strong>Aggregating away the detail.</strong> A monthly loss figure hides the fact that losses doubled in one payment method, one merchant category and one time window. Aggregates conceal the pattern you need.</p>
+<p><strong>No counterfactual.</strong> Nobody records what would have happened without the control, so nobody can say whether the control earned its cost.</p>
+<h2>3. The proposed approach</h2>
+<p>Six questions, in the order an operator should read them.</p>
+<table><thead><tr><th>Question</th><th>Metric</th><th>The trap</th></tr></thead><tbody>
+<tr><td>What is leaking?</td><td>Loss rate per ₹1,000 processed, by method</td><td>Reporting absolute losses; volume growth masks a falling rate</td></tr>
+<tr><td>Where?</td><td>Loss rate by channel, merchant category, geography, ticket band</td><td>Averages hide a single hot cell — always break down to the cell</td></tr>
+<tr><td>From whom?</td><td>Share of loss from repeat actors and linked accounts</td><td>First-party fraud looks like a customer problem until you count repeat devices</td></tr>
+<tr><td>Why now?</td><td>Change versus the prior period, with the trigger identified</td><td>Attributing drift to "seasonality" without checking</td></tr>
+<tr><td>What did we miss?</td><td>False-negative rate from post-hoc review of approved-and-disputed transactions</td><td>Only measuring the alerts you raised</td></tr>
+<tr><td>What did we get wrong?</td><td>False-positive rate and customer friction cost per block</td><td>Treating declines as free</td></tr>
+</tbody></table>
+<p>The two that matter most are the last two. A false-negative review — sampling transactions that were approved and later disputed — is the only way to see the fraud your rules did not catch. And a false-positive count is the only way to see what the control costs in lost customers, which is a real loss line that never appears in a fraud budget.</p>
+<h2>4. How it works in practice</h2>
+<p>A worked week, synthetic figures:</p>
+<ul>
+<li>Loss rate 0.41 per ₹1,000, up from 0.28 the prior week — question one flags it.</li>
+<li>Breakdown puts almost all of the increase in one ticket band and one payment method — question two localises it.</li>
+<li>Repeat-actor share in that cell is 63%, with a cluster of accounts sharing two device fingerprints — question three reframes it from "fraud spike" to "one ring".</li>
+<li>Change coincides with a checkout release — question four identifies the trigger.</li>
+<li>Post-hoc review of 200 approved-and-disputed transactions finds 9 with the same device cluster — question five proves the rule gap.</li>
+<li>Blocked customers in that cell number 41, of whom 6 complained — question six prices the control.</li>
+</ul>
+<p>The output is not a screen. It is three sentences and one decision: tighten the rule for one cell, revert part of the checkout change, and accept the friction cost in the other.</p>
+<h2>5. Trade-offs and failure modes</h2>
+<ul>
+<li><strong>False-negative review is expensive.</strong> Sampling needs judgement and time; a 200-transaction sample per week is a real cost and worth it.</li>
+<li><strong>Friction is hard to price honestly.</strong> Complaint counts undercount silent abandonment, so treat the friction figure as a floor.</li>
+<li><strong>Segment definitions drift.</strong> If "merchant category" is free text, every breakdown is noise.</li>
+<li><strong>Dashboard latency invites gaming.</strong> A daily figure can be managed; a weekly trend cannot.</li>
+</ul>
+<h2>6. What to measure</h2>
+<ul>
+<li>Loss rate per ₹1,000 processed, weekly, by cell.</li>
+<li>False-negative rate from the weekly post-hoc sample.</li>
+<li>False-positive rate and complaint rate per 1,000 blocks.</li>
+<li>Repeat-actor share of total loss.</li>
+<li>Time from first signal to case decision, median and 90th percentile.</li>
+</ul>
+<h2>7. Conclusion</h2>
+<p>If a dashboard cannot answer "what did we miss?" and "what did we get wrong?", it is a status screen, not a control. Both questions are answerable with data most payment teams already hold — they simply require sampling and a join that nobody has been asked to build.</p>
+<hr>
+<p><strong>Disclaimer.</strong> The views here are the author's own. All figures are synthetic and used to illustrate a method.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">Gururaj <em>G J</em></div>
+    <p class="footer-line">Fraud Investigation &middot; Transaction Laundering &middot; Merchant Risk &middot; AML/CFT &middot; Trust &amp; Safety</p>
+    <div class="footer-links">
+      <a href="https://github.com/Gururaj-GJ-G" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/gururaj-gj-52a062b4" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:gururaj.gj.guru@gmail.com">Email</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Gururaj G J &middot; Bengaluru, India</p>
+  </div>
+</footer>
+
+</body>
+</html>
