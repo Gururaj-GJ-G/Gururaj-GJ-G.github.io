@@ -1,0 +1,765 @@
+{
+ "meta": {
+  "signal_count": 34,
+  "rule_packs": [
+   {
+    "name": "ATO_RESET_NEW_DEVICE",
+    "signals": [
+     "AUTH.RESET_THEN_LOGIN_NEW_DEVICE",
+     "DEV.NEW_DEVICE_7D"
+    ],
+    "action": "step_up",
+    "narrative": "Password reset followed by login from a brand new device \u2014 classic ATO pattern."
+   },
+   {
+    "name": "DEVICE_FARMING",
+    "signals": [
+     "LNK.DEVICE_TO_ACCOUNT_COUNT_HIGH",
+     "DEV.NEW_DEVICE_7D"
+    ],
+    "action": "review",
+    "narrative": "Single device linked to unusually high number of accounts \u2014 potential device farming or multi-account abuse."
+   },
+   {
+    "name": "IMPOSSIBLE_TRAVEL_ATO",
+    "signals": [
+     "NET.GEOVELOCITY_IMPOSSIBLE",
+     "AUTH.CREDENTIAL_EVENT_NEW_DEVICE"
+    ],
+    "action": "block",
+    "narrative": "Impossible travel combined with credential event from new device \u2014 very high ATO likelihood."
+   },
+   {
+    "name": "PAYOUT_ABUSE_CHAIN",
+    "signals": [
+     "ACC.PAYOUT_RAIL_CHANGE",
+     "LNK.SHARED_PAYOUT_CLUSTER",
+     "TXN.WITHDRAWAL_VELOCITY_SPIKE"
+    ],
+    "action": "review",
+    "narrative": "Payout method changed + shared payout destination cluster + velocity spike \u2014 coordinated payout abuse ring likely."
+   },
+   {
+    "name": "EMULATOR_FRAUD",
+    "signals": [
+     "DEV.EMULATOR_DETECTED",
+     "DEV.HOOKING_FRAMEWORK"
+    ],
+    "action": "block",
+    "narrative": "Emulator + hooking framework detected on device attempting sensitive action."
+   },
+   {
+    "name": "PASS_THROUGH_BEHAVIOR",
+    "signals": [
+     "TXN.TIME_TO_CASHOUT_LOW",
+     "NET.DATACENTER_ASN"
+    ],
+    "action": "review",
+    "narrative": "Funds moved in and out extremely quickly from datacenter infrastructure \u2014 classic money mule / pass-through pattern."
+   },
+   {
+    "name": "REMOTE_CONTROL_TAKEOVER",
+    "signals": [
+     "DEV.REMOTE_CONTROL_APP",
+     "BEH.RUSHED_SENSITIVE_ACTION"
+    ],
+    "action": "step_up",
+    "narrative": "Remote control / screen sharing app present + rushed movement to high-value action."
+   }
+  ]
+ },
+ "scenarios": [
+  {
+   "slug": "clean",
+   "title": "Clean login",
+   "blurb": "Known device, no payload flags.",
+   "event_type": "login",
+   "payload": {},
+   "action": "approve",
+   "risk_score": 12.0,
+   "confidence": 60,
+   "signals": [],
+   "reasons": [
+    "No fraud signals fired on this event."
+   ],
+   "narrative": "No risk signals fired on this event. Standard monitoring recommended.",
+   "next": [],
+   "graph_flags": []
+  },
+  {
+   "slug": "proxy-vpn",
+   "title": "Proxy / VPN at login",
+   "blurb": "Anonymising infrastructure on an otherwise familiar account \u2014 a single low-weight signal, so the engine approves and logs.",
+   "event_type": "login",
+   "payload": {
+    "proxy_vpn": true
+   },
+   "action": "approve",
+   "risk_score": 19.9,
+   "confidence": 65,
+   "signals": [
+    {
+     "code": "NET.PROXY_VPN_TOR",
+     "category": "NET",
+     "name": "Proxy / VPN / Tor exit node",
+     "weight": 0.71,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "NET.PROXY_VPN_TOR: Proxy / VPN / Tor exit node"
+   ],
+   "narrative": "1 independent risk signal(s) fired without matching a named fraud pattern: Proxy / VPN / Tor exit node (NET.PROXY_VPN_TOR). Combined signal weight drove the risk score of 19.9; review the triggered signals individually.",
+   "next": [],
+   "graph_flags": []
+  },
+  {
+   "slug": "ato-reset",
+   "title": "Password reset, then login on a new device",
+   "blurb": "The ATO reset chain: a recent reset followed by a login from an unseen device.",
+   "event_type": "login",
+   "payload": {
+    "recent_password_reset": true,
+    "is_new_device": true,
+    "after_credential_event": true
+   },
+   "action": "step_up",
+   "risk_score": 64.1,
+   "confidence": 85,
+   "signals": [
+    {
+     "code": "DEV.NEW_DEVICE_7D",
+     "category": "DEV",
+     "name": "New device in last 7 days",
+     "weight": 0.65,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "AUTH.RESET_THEN_LOGIN_NEW_DEVICE",
+     "category": "AUTH",
+     "name": "Password reset followed by login from new device",
+     "weight": 0.85,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00",
+      "pattern": "login_after_recent_reset_new_device"
+     }
+    },
+    {
+     "code": "AUTH.CREDENTIAL_EVENT_NEW_DEVICE",
+     "category": "AUTH",
+     "name": "Credential event from new device",
+     "weight": 0.79,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "AUTH.RESET_THEN_LOGIN_NEW_DEVICE: Password reset followed by login from new device",
+    "DEV.NEW_DEVICE_7D: New device in last 7 days"
+   ],
+   "narrative": "Password reset followed by login from a brand new device \u2014 classic ATO pattern.",
+   "next": [
+    "Force step-up authentication (FIDO2 or video KYC)",
+    "Temporarily limit high-value actions for 24h"
+   ],
+   "graph_flags": []
+  },
+  {
+   "slug": "device-farming",
+   "title": "Device farming",
+   "blurb": "Nine accounts on one device, scripted navigation, datacenter infrastructure.",
+   "event_type": "session_start",
+   "payload": {
+    "device_account_count": 9,
+    "is_new_device": true,
+    "scripted_navigation": true,
+    "datacenter_asn": true
+   },
+   "action": "review",
+   "risk_score": 81.5,
+   "confidence": 90,
+   "signals": [
+    {
+     "code": "DEV.NEW_DEVICE_7D",
+     "category": "DEV",
+     "name": "New device in last 7 days",
+     "weight": 0.65,
+     "evidence": {
+      "event_type": "session_start",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "NET.DATACENTER_ASN",
+     "category": "NET",
+     "name": "Datacenter / hosting ASN",
+     "weight": 0.68,
+     "evidence": {
+      "event_type": "session_start",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "BEH.SCRIPTED_NAVIGATION",
+     "category": "BEH",
+     "name": "Scripted / robotic navigation",
+     "weight": 0.74,
+     "evidence": {
+      "event_type": "session_start",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "LNK.DEVICE_TO_ACCOUNT_COUNT_HIGH",
+     "category": "LNK",
+     "name": "Device linked to many accounts",
+     "weight": 0.84,
+     "evidence": {
+      "event_type": "session_start",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "LNK.DEVICE_TO_ACCOUNT_COUNT_HIGH: Device linked to many accounts",
+    "DEV.NEW_DEVICE_7D: New device in last 7 days"
+   ],
+   "narrative": "Single device linked to unusually high number of accounts \u2014 potential device farming or multi-account abuse.",
+   "next": [
+    "Queue for analyst review in ZIC (high priority)",
+    "Request additional verification (video KYC or OOB)",
+    "Open graph investigation in ZIC \u2014 check for connected accounts"
+   ],
+   "graph_flags": [
+    "ring_member_likely"
+   ]
+  },
+  {
+   "slug": "emulator-hooking",
+   "title": "Emulator with a hooking framework",
+   "blurb": "Emulator detected plus runtime hooking at session start \u2014 the EMULATOR_FRAUD pack.",
+   "event_type": "session_start",
+   "payload": {
+    "emulator_detected": true,
+    "hooking_detected": true
+   },
+   "action": "block",
+   "risk_score": 48.4,
+   "confidence": 80,
+   "signals": [
+    {
+     "code": "DEV.EMULATOR_DETECTED",
+     "category": "DEV",
+     "name": "Emulator / VM detected",
+     "weight": 0.85,
+     "evidence": {
+      "event_type": "session_start",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "DEV.HOOKING_FRAMEWORK",
+     "category": "DEV",
+     "name": "Hooking / instrumentation framework detected",
+     "weight": 0.88,
+     "evidence": {
+      "event_type": "session_start",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "DEV.EMULATOR_DETECTED: Emulator / VM detected",
+    "DEV.HOOKING_FRAMEWORK: Hooking / instrumentation framework detected"
+   ],
+   "narrative": "Emulator + hooking framework detected on device attempting sensitive action.",
+   "next": [
+    "Immediately block transaction / session",
+    "Flag account for manual review within 15 minutes"
+   ],
+   "graph_flags": []
+  },
+  {
+   "slug": "remote-control",
+   "title": "Remote-control takeover",
+   "blurb": "Screen-sharing app present at login, then a rushed sensitive action seconds later.",
+   "event_type": "login",
+   "payload": {
+    "remote_control_app": true,
+    "rushed_sensitive_action": true,
+    "seconds_since_login": 45
+   },
+   "action": "step_up",
+   "risk_score": 42.0,
+   "confidence": 80,
+   "signals": [
+    {
+     "code": "DEV.REMOTE_CONTROL_APP",
+     "category": "DEV",
+     "name": "Remote control / screen sharing app present",
+     "weight": 0.81,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "BEH.RUSHED_SENSITIVE_ACTION",
+     "category": "BEH",
+     "name": "Rushed movement to sensitive action",
+     "weight": 0.69,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00",
+      "seconds_since_login": 45
+     }
+    }
+   ],
+   "reasons": [
+    "DEV.REMOTE_CONTROL_APP: Remote control / screen sharing app present",
+    "BEH.RUSHED_SENSITIVE_ACTION: Rushed movement to sensitive action"
+   ],
+   "narrative": "Remote control / screen sharing app present + rushed movement to high-value action.",
+   "next": [
+    "Force step-up authentication (FIDO2 or video KYC)",
+    "Temporarily limit high-value actions for 24h"
+   ],
+   "graph_flags": []
+  },
+  {
+   "slug": "impossible-travel",
+   "title": "Impossible travel after a credential event",
+   "blurb": "Geo-velocity break on a new device immediately after a credential change.",
+   "event_type": "login",
+   "payload": {
+    "impossible_travel": true,
+    "after_credential_event": true,
+    "is_new_device": true
+   },
+   "action": "block",
+   "risk_score": 63.3,
+   "confidence": 85,
+   "signals": [
+    {
+     "code": "DEV.NEW_DEVICE_7D",
+     "category": "DEV",
+     "name": "New device in last 7 days",
+     "weight": 0.65,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "NET.GEOVELOCITY_IMPOSSIBLE",
+     "category": "NET",
+     "name": "Impossible travel",
+     "weight": 0.82,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "AUTH.CREDENTIAL_EVENT_NEW_DEVICE",
+     "category": "AUTH",
+     "name": "Credential event from new device",
+     "weight": 0.79,
+     "evidence": {
+      "event_type": "login",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "NET.GEOVELOCITY_IMPOSSIBLE: Impossible travel",
+    "AUTH.CREDENTIAL_EVENT_NEW_DEVICE: Credential event from new device"
+   ],
+   "narrative": "Impossible travel combined with credential event from new device \u2014 very high ATO likelihood.",
+   "next": [
+    "Immediately block transaction / session",
+    "Flag account for manual review within 15 minutes"
+   ],
+   "graph_flags": []
+  },
+  {
+   "slug": "payout-abuse",
+   "title": "Payout abuse chain",
+   "blurb": "Recent payout-rail change, a shared payout cluster and a withdrawal velocity spike.",
+   "event_type": "withdrawal",
+   "payload": {
+    "recent_payout_change": true,
+    "shared_payout_cluster": true,
+    "velocity_spike": true
+   },
+   "action": "review",
+   "risk_score": 63.3,
+   "confidence": 85,
+   "signals": [
+    {
+     "code": "ACC.PAYOUT_RAIL_CHANGE",
+     "category": "ACC",
+     "name": "Payout / beneficiary rail change",
+     "weight": 0.73,
+     "evidence": {
+      "event_type": "withdrawal",
+      "timestamp": "2026-11-19T10:00:00+00:00",
+      "pattern": "payout_change_before_withdrawal"
+     }
+    },
+    {
+     "code": "LNK.SHARED_PAYOUT_CLUSTER",
+     "category": "LNK",
+     "name": "Shared payout destination cluster",
+     "weight": 0.81,
+     "evidence": {
+      "event_type": "withdrawal",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "TXN.WITHDRAWAL_VELOCITY_SPIKE",
+     "category": "TXN",
+     "name": "Withdrawal velocity spike",
+     "weight": 0.72,
+     "evidence": {
+      "event_type": "withdrawal",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "ACC.PAYOUT_RAIL_CHANGE: Payout / beneficiary rail change",
+    "LNK.SHARED_PAYOUT_CLUSTER: Shared payout destination cluster",
+    "TXN.WITHDRAWAL_VELOCITY_SPIKE: Withdrawal velocity spike"
+   ],
+   "narrative": "Payout method changed + shared payout destination cluster + velocity spike \u2014 coordinated payout abuse ring likely.",
+   "next": [
+    "Queue for analyst review in ZIC (high priority)",
+    "Request additional verification (video KYC or OOB)",
+    "Open graph investigation in ZIC \u2014 check for connected accounts"
+   ],
+   "graph_flags": [
+    "ring_member_likely"
+   ]
+  },
+  {
+   "slug": "mule-passthrough",
+   "title": "Mule pass-through",
+   "blurb": "Funds in and straight out to cash-out from datacenter infrastructure.",
+   "event_type": "withdrawal",
+   "payload": {
+    "time_to_cashout_seconds": 60,
+    "datacenter_asn": true
+   },
+   "action": "review",
+   "risk_score": 40.0,
+   "confidence": 80,
+   "signals": [
+    {
+     "code": "NET.DATACENTER_ASN",
+     "category": "NET",
+     "name": "Datacenter / hosting ASN",
+     "weight": 0.68,
+     "evidence": {
+      "event_type": "withdrawal",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "TXN.TIME_TO_CASHOUT_LOW",
+     "category": "TXN",
+     "name": "Very short time-to-cashout",
+     "weight": 0.75,
+     "evidence": {
+      "event_type": "withdrawal",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "TXN.TIME_TO_CASHOUT_LOW: Very short time-to-cashout",
+    "NET.DATACENTER_ASN: Datacenter / hosting ASN"
+   ],
+   "narrative": "Funds moved in and out extremely quickly from datacenter infrastructure \u2014 classic money mule / pass-through pattern.",
+   "next": [
+    "Queue for analyst review in ZIC (high priority)",
+    "Request additional verification (video KYC or OOB)"
+   ],
+   "graph_flags": []
+  },
+  {
+   "slug": "mfa-reset",
+   "title": "MFA reset, then a beneficiary addition",
+   "blurb": "Recovery details changed, then a beneficiary added within seventy seconds of login.",
+   "event_type": "beneficiary_add",
+   "payload": {
+    "mfa_or_recovery_changed": true,
+    "rushed_sensitive_action": true,
+    "seconds_since_login": 70
+   },
+   "action": "step_up",
+   "risk_score": 61.3,
+   "confidence": 75,
+   "signals": [
+    {
+     "code": "AUTH.MFA_RESET_RECENT",
+     "category": "AUTH",
+     "name": "Recent MFA / recovery method change",
+     "weight": 0.77,
+     "evidence": {
+      "event_type": "beneficiary_add",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    },
+    {
+     "code": "BEH.RUSHED_SENSITIVE_ACTION",
+     "category": "BEH",
+     "name": "Rushed movement to sensitive action",
+     "weight": 0.69,
+     "evidence": {
+      "event_type": "beneficiary_add",
+      "timestamp": "2026-11-19T10:00:00+00:00",
+      "seconds_since_login": 70
+     }
+    },
+    {
+     "code": "ACC.PAYOUT_RAIL_CHANGE",
+     "category": "ACC",
+     "name": "Payout / beneficiary rail change",
+     "weight": 0.73,
+     "evidence": {
+      "event_type": "beneficiary_add",
+      "timestamp": "2026-11-19T10:00:00+00:00"
+     }
+    }
+   ],
+   "reasons": [
+    "AUTH.MFA_RESET_RECENT: Recent MFA / recovery method change",
+    "ACC.PAYOUT_RAIL_CHANGE: Payout / beneficiary rail change",
+    "BEH.RUSHED_SENSITIVE_ACTION: Rushed movement to sensitive action"
+   ],
+   "narrative": "3 independent risk signal(s) fired without matching a named fraud pattern: Recent MFA / recovery method change (AUTH.MFA_RESET_RECENT), Payout / beneficiary rail change (ACC.PAYOUT_RAIL_CHANGE), Rushed movement to sensitive action (BEH.RUSHED_SENSITIVE_ACTION). Combined signal weight drove the risk score of 61.3; review the triggered signals individually.",
+   "next": [
+    "Force step-up authentication (FIDO2 or video KYC)",
+    "Temporarily limit high-value actions for 24h"
+   ],
+   "graph_flags": []
+  }
+ ],
+ "signals": [
+  {
+   "code": "DEV.NEW_DEVICE_7D",
+   "category": "DEV",
+   "name": "New device in last 7 days",
+   "weight": 0.65
+  },
+  {
+   "code": "DEV.FINGERPRINT_DRIFT",
+   "category": "DEV",
+   "name": "Fingerprint drift detected",
+   "weight": 0.72
+  },
+  {
+   "code": "DEV.EMULATOR_DETECTED",
+   "category": "DEV",
+   "name": "Emulator / VM detected",
+   "weight": 0.85
+  },
+  {
+   "code": "DEV.ROOTED_JAILBROKEN",
+   "category": "DEV",
+   "name": "Rooted or jailbroken device",
+   "weight": 0.78
+  },
+  {
+   "code": "DEV.REMOTE_CONTROL_APP",
+   "category": "DEV",
+   "name": "Remote control / screen sharing app present",
+   "weight": 0.81
+  },
+  {
+   "code": "DEV.HOOKING_FRAMEWORK",
+   "category": "DEV",
+   "name": "Hooking / instrumentation framework detected",
+   "weight": 0.88
+  },
+  {
+   "code": "DEV.HEADLESS_BROWSER",
+   "category": "DEV",
+   "name": "Headless browser traits",
+   "weight": 0.79
+  },
+  {
+   "code": "DEV.TAMPERED_BROWSER",
+   "category": "DEV",
+   "name": "Browser tampering detected",
+   "weight": 0.76
+  },
+  {
+   "code": "NET.DATACENTER_ASN",
+   "category": "NET",
+   "name": "Datacenter / hosting ASN",
+   "weight": 0.68
+  },
+  {
+   "code": "NET.PROXY_VPN_TOR",
+   "category": "NET",
+   "name": "Proxy / VPN / Tor exit node",
+   "weight": 0.71
+  },
+  {
+   "code": "NET.GEOVELOCITY_IMPOSSIBLE",
+   "category": "NET",
+   "name": "Impossible travel",
+   "weight": 0.82
+  },
+  {
+   "code": "NET.IP_REUSE_HIGH",
+   "category": "NET",
+   "name": "High IP reuse across accounts",
+   "weight": 0.67
+  },
+  {
+   "code": "NET.ASN_CONCENTRATION",
+   "category": "NET",
+   "name": "ASN concentration anomaly",
+   "weight": 0.64
+  },
+  {
+   "code": "BEH.SCRIPTED_NAVIGATION",
+   "category": "BEH",
+   "name": "Scripted / robotic navigation",
+   "weight": 0.74
+  },
+  {
+   "code": "BEH.RUSHED_SENSITIVE_ACTION",
+   "category": "BEH",
+   "name": "Rushed movement to sensitive action",
+   "weight": 0.69
+  },
+  {
+   "code": "BEH.LOW_INTERACTION_ENTROPY",
+   "category": "BEH",
+   "name": "Low interaction entropy",
+   "weight": 0.66
+  },
+  {
+   "code": "BEH.TYPING_CADENCE_BOT",
+   "category": "BEH",
+   "name": "Bot-like typing cadence",
+   "weight": 0.71
+  },
+  {
+   "code": "AUTH.FAILED_LOGIN_BURST",
+   "category": "AUTH",
+   "name": "Failed login burst",
+   "weight": 0.63
+  },
+  {
+   "code": "AUTH.RESET_THEN_LOGIN_NEW_DEVICE",
+   "category": "AUTH",
+   "name": "Password reset followed by login from new device",
+   "weight": 0.85
+  },
+  {
+   "code": "AUTH.MFA_RESET_RECENT",
+   "category": "AUTH",
+   "name": "Recent MFA / recovery method change",
+   "weight": 0.77
+  },
+  {
+   "code": "AUTH.CREDENTIAL_EVENT_NEW_DEVICE",
+   "category": "AUTH",
+   "name": "Credential event from new device",
+   "weight": 0.79
+  },
+  {
+   "code": "ACC.PAYOUT_RAIL_CHANGE",
+   "category": "ACC",
+   "name": "Payout / beneficiary rail change",
+   "weight": 0.73
+  },
+  {
+   "code": "ACC.CONTACT_POINT_CHANGE",
+   "category": "ACC",
+   "name": "Contact point (email/phone) change",
+   "weight": 0.61
+  },
+  {
+   "code": "ACC.PROFILE_EDIT_AFTER_LOGIN_NEW_DEVICE",
+   "category": "ACC",
+   "name": "Profile edit after new device login",
+   "weight": 0.68
+  },
+  {
+   "code": "LNK.DEVICE_TO_ACCOUNT_COUNT_HIGH",
+   "category": "LNK",
+   "name": "Device linked to many accounts",
+   "weight": 0.84
+  },
+  {
+   "code": "LNK.SHARED_PAYOUT_CLUSTER",
+   "category": "LNK",
+   "name": "Shared payout destination cluster",
+   "weight": 0.81
+  },
+  {
+   "code": "LNK.SHARED_IP_CLUSTER",
+   "category": "LNK",
+   "name": "Shared IP infrastructure cluster",
+   "weight": 0.76
+  },
+  {
+   "code": "LNK.GRAPH_CENTRALITY_HIGH",
+   "category": "LNK",
+   "name": "High graph centrality (ring member)",
+   "weight": 0.83
+  },
+  {
+   "code": "BEH.PROFILE_RISK_DEVIATION",
+   "category": "BEH",
+   "name": "Current event deviates from personal risk baseline",
+   "weight": 0.71
+  },
+  {
+   "code": "BEH.ACCOUNT_VELOCITY_ANOMALY",
+   "category": "BEH",
+   "name": "Account activity velocity anomaly",
+   "weight": 0.69
+  },
+  {
+   "code": "TXN.WITHDRAWAL_VELOCITY_SPIKE",
+   "category": "TXN",
+   "name": "Withdrawal velocity spike",
+   "weight": 0.72
+  },
+  {
+   "code": "TXN.SUDDEN_BALANCE_DRAIN",
+   "category": "TXN",
+   "name": "Sudden large balance drain",
+   "weight": 0.78
+  },
+  {
+   "code": "TXN.TIME_TO_CASHOUT_LOW",
+   "category": "TXN",
+   "name": "Very short time-to-cashout",
+   "weight": 0.75
+  },
+  {
+   "code": "TXN.UNUSUAL_ACTION_AFTER_LOGIN",
+   "category": "TXN",
+   "name": "High-risk action immediately after login",
+   "weight": 0.67
+  }
+ ]
+}

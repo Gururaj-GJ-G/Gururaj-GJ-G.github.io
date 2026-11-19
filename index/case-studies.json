@@ -17,22 +17,22 @@
   },
   "entries": [
     {
-      "id": "CS-2026-001",
-      "type": "case-study",
-      "title": "Payment-Direction Deception on a Classifieds Marketplace",
-      "date": "2026-04-01",
-      "category": "marketplace",
-      "summary": "A seller was contacted within minutes of listing an item and sent two images implying a payment had arrived. Neither showed a credit. Checking the balance instead of the screenshot is what stopped it.",
+      "id": "PUB-2026-004",
+      "type": "publication",
+      "title": "Inside a 14-Section Merchant Onboarding Playbook",
+      "date": "2026-11-10",
+      "category": "merchant-risk",
+      "summary": "What goes into a merchant-side onboarding playbook, section by section — five assessment layers, the evidence pack, the triage table and the readiness checklists that make a submission approvable.",
       "chips": [
-        "Marketplace fraud",
-        "Social engineering",
-        "Evidence timeline"
+        "Merchant risk",
+        "Playbook",
+        "Evidence"
       ],
-      "url": "case-studies/CS-2026-001-payment-direction-deception.md",
+      "url": "publications/PUB-2026-004-zarelva-playbook.md",
       "status": "published",
-      "page": "cases/CS-2026-001-payment-direction-deception.html",
+      "page": "cases/PUB-2026-004-zarelva-playbook.html",
       "read_minutes": 4,
-      "words": 856
+      "words": 885
     },
     {
       "id": "PUB-2026-001",
@@ -51,6 +51,24 @@
       "page": "cases/PUB-2026-001-payment-risk-onboarding-pack.html",
       "read_minutes": 4,
       "words": 874
+    },
+    {
+      "id": "CS-2026-002",
+      "type": "case-study",
+      "title": "Loan-App Harassment: Nine Days From Panic to Remediation",
+      "date": "2026-10-25",
+      "category": "forensics",
+      "summary": "A borrower's phone carried seven sideloaded APKs and her contacts were being used to pressure her. Nine days of device forensics, permission auditing and evidence packaging turned a panic into a documented case.",
+      "chips": [
+        "Android forensics",
+        "Permissions",
+        "Harassment"
+      ],
+      "url": "case-studies/CS-2026-002-loan-app-harassment.md",
+      "status": "published",
+      "page": "cases/CS-2026-002-loan-app-harassment.html",
+      "read_minutes": 4,
+      "words": 960
     },
     {
       "id": "PUB-2026-002",
@@ -76,7 +94,7 @@
       "title": "Six Questions a Payment-Fraud Dashboard Should Answer",
       "date": "2026-09-20",
       "category": "payments",
-      "summary": "Most fraud dashboards report activity. The useful ones answer six questions — and the last two, what did we miss and what did we get wrong, are the ones that separate a status screen from a control.",
+      "summary": "Most fraud dashboards report activity. The useful ones answer six questions — and the last two, what did we miss and what did we get wrong, separate a status screen from a control.",
       "chips": [
         "Payments",
         "Metrics",
@@ -87,6 +105,24 @@
       "page": "cases/PUB-2026-003-payment-fraud-dashboard.html",
       "read_minutes": 3,
       "words": 753
+    },
+    {
+      "id": "CS-2026-001",
+      "type": "case-study",
+      "title": "Payment-Direction Deception on a Classifieds Marketplace",
+      "date": "2026-04-01",
+      "category": "marketplace",
+      "summary": "A seller was contacted within minutes of listing an item and sent two images implying a payment had arrived. Neither showed a credit. Checking the balance instead of the screenshot is what stopped it.",
+      "chips": [
+        "Marketplace fraud",
+        "Social engineering",
+        "Evidence timeline"
+      ],
+      "url": "case-studies/CS-2026-001-payment-direction-deception.md",
+      "status": "published",
+      "page": "cases/CS-2026-001-payment-direction-deception.html",
+      "read_minutes": 4,
+      "words": 856
     }
   ]
 }

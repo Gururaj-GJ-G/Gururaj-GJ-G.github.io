@@ -11,6 +11,7 @@ A single static page, no framework — `index.html`, `style.css`, `app.js`.
 - Experience timeline covering G2 Risk Solutions, Amazon (AWS), Accenture (Google operations), Flipkart, the 2025–26 caregiving break and Onsurity
 - Projects split across merchant-risk advisory, decisioning, investigation, operations and intelligence
 - Case studies and publications written in markdown (`case-studies/`, `publications/`), validated in CI and built into styled reader pages under `cases/` — see `CASE-STUDIES.md`
+- Browser demos for the two decision engines under `demos/` (outputs captured from the repositories' own engines), and mirrored static tools under `tools/`
 - `Gururaj-GJ-G-Resume.pdf` is generated from my current CV
 
 ## Links
